@@ -112,8 +112,20 @@ public class Achievement
 public enum AchievementID 
 {
     NONE, // 無効な状態を示すためによく使われます
-    ACH_LUCK_MAX,     // 神の領域 (991～1000)
-    ACH_LUCK_HIGH,    // 幸運の持ち主 (501～990)
-    ACH_LUCK_LOW,     // 参加賞 (1～500)
-    // 今後追加する実績はここに追加していく
+    ACH1,
+    ACH2,
+    ACH3,
+    ACH4,
+    ACH5,
+    ACH6,
+    ACH7,
+    ACH8,
+    ACH9,
+    ACH10,
+    ACH11,
+    ACH12,
+    ACH13,
+    ACH14,
+    ACH15,
+    ACH16,
 }
