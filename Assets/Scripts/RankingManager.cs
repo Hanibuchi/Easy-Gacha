@@ -5,6 +5,7 @@ using System.Linq; // OrderByDescendingを使うために必要
 using System;
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
+using unityroom.Api;
 
 public class RankingManager : MonoBehaviour
 {
@@ -115,6 +116,7 @@ public class RankingManager : MonoBehaviour
     /// <returns>成功した場合はtrue</returns>
     public async Task<bool> SubmitScoreAsync(long score, string username, string clientToken)
     {
+        UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
         if (supabase == null)
         {
             Debug.LogError("Supabase is not initialized.");
