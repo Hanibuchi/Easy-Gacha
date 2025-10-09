@@ -399,6 +399,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7226268183560609224, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
+      propertyPath: m_Name
+      value: Close
+      objectReference: {fileID: 0}
     - target: {fileID: 7641527009114651266, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
       propertyPath: m_Name
       value: AchievementCanvas
@@ -453,7 +457,18 @@ MonoBehaviour:
   - {fileID: 1153962971860272302}
   - {fileID: 2670794833081228787}
   - {fileID: 9181400411770663057}
-  closeButton: {fileID: 0}
+  closeButton: {fileID: 8932414877081774784}
+--- !u!114 &8932414877081774784 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7226268183560609226, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
+  m_PrefabInstance: {fileID: 2287420285244798730}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3157569041349060435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1931,6 +1946,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8041333997917773}
     m_Modifications:
+    - target: {fileID: 2513215956245870336, guid: 45e6fb05d766ac24c901afec2c050ab3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 121
+      objectReference: {fileID: 0}
+    - target: {fileID: 2513215956245870336, guid: 45e6fb05d766ac24c901afec2c050ab3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -60
+      objectReference: {fileID: 0}
     - target: {fileID: 4024877421698696194, guid: 45e6fb05d766ac24c901afec2c050ab3, type: 3}
       propertyPath: m_Name
       value: AchievementEntry
