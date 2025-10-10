@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -6,15 +7,50 @@ public class GameManager : MonoBehaviour
     [Min(1)]
     [SerializeField] long mean = 50;
     System.Random rand;
+    public static GameManager Instance;
     void Awake()
     {
         rand = new System.Random();
+        // シングルトンのインスタンス設定
+
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
 
     }
+
+    ScoreUI scoreUI;
+    public void GetScoreUI(ScoreUI scoreUI)
+    {
+        this.scoreUI = scoreUI;
+    }
+
+    public void StartRoulette()
+    {
+        var score = GenerateDiscreteExponential();
+        if (scoreUI == null)
+        {
+            Debug.LogError("ScoreUI is not assigned.");
+            return;
+        }
+        scoreUI.StartRoulette(score, null);
+    }
+
+    
+    // --- インスペクタから設定するパラメータ ---
+    [Header("Game Parameters")]
+    [Tooltip("演出の分岐に使われるしきい値1")]
+    public long scoreThreshold = 50;
 
     public long GenerateDiscreteExponential()
     {
