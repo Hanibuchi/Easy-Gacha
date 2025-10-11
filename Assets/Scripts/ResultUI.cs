@@ -33,6 +33,14 @@ public class ResultUI : MonoBehaviour
     void Awake()
     {
         // ★★★ ボタンイベントの自動登録 ★★★
+        if (newRecordObject != null)
+        {
+            newRecordObject.SetActive(false);
+        }
+        if (achievementObject != null)
+        {
+            achievementObject.SetActive(false);
+        }
 
         // 1. リトライボタン
         if (retryButton != null)
@@ -72,6 +80,11 @@ public class ResultUI : MonoBehaviour
         }
     }
 
+    [Header("Conditional UI")]
+    [Tooltip("新記録の場合にActiveにするGameObject")]
+    public GameObject newRecordObject;
+    [Tooltip("実績解除の場合にActiveにするGameObject")]
+    public GameObject achievementObject;
     public void Start()
     {
         // 演出コルーチンを開始
@@ -115,6 +128,22 @@ public class ResultUI : MonoBehaviour
         // 3. レア度表示
         rarityText.text = $"{rarity}";
         yield return new WaitForSeconds(commentDelay);
+
+
+
+        if (isBest && newRecordObject != null)
+        {
+            newRecordObject.SetActive(true);
+            Debug.Log("新記録オブジェクトをアクティブにしました。");
+        }
+
+        // 実績解除の場合は対応するGameObjectをアクティブにする
+        if (isAchievement && achievementObject != null)
+        {
+            achievementObject.SetActive(true);
+            Debug.Log("実績解除オブジェクトをアクティブにしました。");
+        }
+        
 
         // 4. コメント表示
         commentText.text = comment;

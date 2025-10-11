@@ -23,7 +23,7 @@ public class RankingEntry : MonoBehaviour
     /// <param name="data">HighScoreデータ</param>
     public void SetData(int rank, HighScore data, bool isMyScore = false)
     {
-        rankText.text = $"{rank}.";
+        rankText.text = $"{rank}";
         // スコアはlong型なので、適切な形式で表示します。
         scoreText.text = data.Score.ToString("N0"); // 例: 1,234,567 の形式
         usernameText.text = data.Username;
