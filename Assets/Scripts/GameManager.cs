@@ -33,9 +33,15 @@ public class GameManager : MonoBehaviour
     }
     public GameObject buttonsUI;
     public GameObject startUIPrefab;
+    public GameObject titleUIPrefab;
+    GameObject titleUI;
+
 
     void Start()
     {
+        titleUI = Instantiate(titleUIPrefab);
+        titleUI.GetComponent<TitleUI>().OnAnimationComplete += OnTitleAnimationComplete;
+
         bestScore = PlayerPrefs.GetInt(BEST_SCORE_KEY, 0);
         if (PlayerPrefs.HasKey(IS_PLAYED_BEFORE_KEY))
         {
@@ -43,6 +49,10 @@ public class GameManager : MonoBehaviour
         }
         PlayerPrefs.SetInt(IS_PLAYED_BEFORE_KEY, 1);
         PlayerPrefs.Save();
+    }
+
+    void OnTitleAnimationComplete()
+    {
         Instantiate(startUIPrefab);
     }
 
@@ -85,6 +95,11 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(StartRouletteRoutine());
         OpenButtonsUI(false);
+        if (titleUI != null)
+        {
+            Destroy(titleUI);
+            titleUI = null;
+        }
     }
 
     private IEnumerator StartRouletteRoutine()
