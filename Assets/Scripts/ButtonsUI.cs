@@ -14,9 +14,11 @@ public class ButtonsUI : MonoBehaviour
     {
         // 1. Achievements (図鑑) ボタンが押されたら
         achievementsButton.onClick.AddListener(OnAchievementsClicked);
-
         // 2. Ranking ボタンが押されたら
         rankingButton.onClick.AddListener(OnRankingClicked);
+
+        volumeSlider.onValueChanged.AddListener(SetMasterVolume);
+        volumeSlider.value = 0.5f;
 
         Debug.Log("ButtonsUIの初期設定が完了しました。");
     }
@@ -31,5 +33,14 @@ public class ButtonsUI : MonoBehaviour
     private void OnRankingClicked()
     {
         GameManager.Instance.OpenRankingsUI();
+    }
+
+    // UnityエディタからSliderコンポーネントをアタッチするための変数
+    [SerializeField] private Slider volumeSlider;
+
+    // スライダーの値（0.0〜1.0）を受け取り、マスター音量に設定するメソッド
+    public void SetMasterVolume(float volume)
+    {
+        AudioListener.volume = volume;
     }
 }
