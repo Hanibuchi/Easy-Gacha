@@ -196,6 +196,10 @@ public class GameManager : MonoBehaviour
     {
         return (long)Math.Exp((double)x / mean);
     }
+    public long CalcRarityPinPoint(long x)
+    {
+        return (long)((double)1 / (-Math.Exp(-(double)x / mean) + Math.Exp(-(double)(x - 1) / mean)));
+    }
 
     public GameObject achievementsUIPrefab;
     public GameObject rankingUIPrefab;

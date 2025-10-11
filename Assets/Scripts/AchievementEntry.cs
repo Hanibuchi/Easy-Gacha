@@ -18,11 +18,25 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
     // PopUpを生成・設定する関数 (AchievementsManagerから情報を渡すために使用)
     public void Initialize(Achievement achievementData)
     {
-        // データを内部に保持し、UIに反映
-        _hoverMessage = $"{achievementData.displayName}\n<size=80%>{achievementData.comment}</size>";
-
         // 達成度合いをUIに反映
         bool isUnlocked = achievementData.isUnlocked;
+        bool isPinPoint = achievementData.maxScore - achievementData.minScore == 0;
+
+        // データを内部に保持し、UIに反映
+        if (isUnlocked)
+        {
+            if (isPinPoint)
+                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}\n{GameManager.Instance.CalcRarityPinPoint(achievementData.minScore)}に1回\n{achievementData.comment}";
+            else
+                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}~\n{GameManager.Instance.CalcRarity(achievementData.minScore)}に1回\n{achievementData.comment}";
+        }
+        else
+        {
+            if (isPinPoint)
+                _hoverMessage = $"<size=120%>???</size>\n{new string('?', achievementData.minScore.ToString().Length)}";
+            else
+                _hoverMessage = $"<size=120%>???</size>\n{achievementData.minScore}~";
+        }
 
         unlockedIcon.SetActive(isUnlocked);
 
