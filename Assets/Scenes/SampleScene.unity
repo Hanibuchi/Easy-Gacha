@@ -1356,7 +1356,7 @@ MonoBehaviour:
   mean: 50
   buttonsUI: {fileID: 1273241681}
   startUIPrefab: {fileID: 2426271184564667298, guid: a09838d2dec2b204cb1683076ed8c4aa, type: 3}
-  scoreThreshold: 200
+  scoreThreshold: 150
   cameraDuration: 1
   clackerDuration: 1.5
   clackerParticle: {fileID: 1670495741}
@@ -1762,7 +1762,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   supabaseUrl: https://vlaaenmampgicpczttet.supabase.co
   supabaseAnonKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYWFlbm1hbXBnaWNwY3p0dGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDE2NTcsImV4cCI6MjA3NTMxNzY1N30.BKnzYpVzR91j2dnDk-dtLmlb9iYYJg0_GGTlJV_JRz8
-  defaultUsername: "\u540D\u3082\u306A\u304D\u6687\u4EBA"
+  defaultUsername: "\u901A\u308A\u3059\u304C\u308A\u306E\u6311\u6226\u8005"
   score: 300
   test_username: "\u30B3\u30CD\u30AF\u30BF"
 --- !u!4 &1575234967

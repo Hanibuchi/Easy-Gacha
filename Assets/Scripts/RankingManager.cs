@@ -60,6 +60,11 @@ public class RankingManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public async void SubmitBestScore(long score)
+    {
+        await SubmitScoreAsync(score, username, _clientToken);
+    }
+
     public async Task ChangeUserName(string newUsername)
     {
         username = newUsername;

@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
             bestScore = score;
             PlayerPrefs.SetInt(BEST_SCORE_KEY, (int)bestScore);
             PlayerPrefs.Save();
+            RankingManager.Instance.SubmitBestScore(score);
             comment = "新記録おめでとう！";
             Debug.Log("🎉 New Best Score! 🎉");
         }
