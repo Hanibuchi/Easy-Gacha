@@ -194,7 +194,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 40
   m_TargetDisplay: 0
 --- !u!224 &290331925
 RectTransform:
@@ -1239,15 +1239,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2355692693315921260, guid: d96fce51dff69ab4a919f14221cb981b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3687797823720315243, guid: d96fce51dff69ab4a919f14221cb981b, type: 3}
       propertyPath: m_Name
       value: ButtonsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3687797823720315243, guid: d96fce51dff69ab4a919f14221cb981b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5226816413229961986, guid: d96fce51dff69ab4a919f14221cb981b, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

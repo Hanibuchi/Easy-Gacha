@@ -1999,6 +1999,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865887002718159948, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 1481001165093508380, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
       propertyPath: closeButton
       value: 
@@ -2367,8 +2371,8 @@ MonoBehaviour:
   retryButton: {fileID: 9033622242457557261}
   rankingButton: {fileID: 3382442580100350494}
   achievementButton: {fileID: 6548934010915246369}
-  score: 100
-  comment: "\u30D9\u30B9\u30C8\u30B9\u30B3\u30A2\u304A\u3081\u3067\u3068\u3046\uFF01"
+  test_score: 100
+  test_comment: "\u30D9\u30B9\u30C8\u30B9\u30B3\u30A2\u304A\u3081\u3067\u3068\u3046\uFF01"
 --- !u!224 &4386098127841951583 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5760722029199789296, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
