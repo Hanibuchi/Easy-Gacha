@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
         scoreUI.StartRoulette(score, isBest, isCameraEffect, () =>
         {
             StartCoroutine(DisplayResult(score, comment, isBest, isAchievement));
-        });
+        }, isAchievement);
     }
 
     IEnumerator DisplayResult(long score, string comment, bool isBest, bool isAchievement)

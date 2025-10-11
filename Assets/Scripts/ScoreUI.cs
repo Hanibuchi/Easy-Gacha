@@ -15,6 +15,7 @@ public class ScoreUI : MonoBehaviour
     [Tooltip("時間差で表示されるコメント用テキスト")]
     public TextMeshPro RarityText;
     public GameObject BestScoreText;
+    public GameObject AchievementUnlockedText;
 
 
 
@@ -43,6 +44,7 @@ public class ScoreUI : MonoBehaviour
         RarityText.text = "";
         ScoreText.text = "";
         BestScoreText.SetActive(false);
+        AchievementUnlockedText.SetActive(false);
     }
 
     // --- エントリポイント ---
@@ -50,7 +52,7 @@ public class ScoreUI : MonoBehaviour
     /// ルーレット演出を開始し、最終スコアを決定します。
     /// </summary>
     /// <param name="score">最終的に表示するスコア</param>
-    public void StartRoulette(long score, bool isBest = false, bool isCameraEffect = false, Action callback = null)
+    public void StartRoulette(long score, bool isBest = false, bool isCameraEffect = false, Action callback = null, bool isAchievementUnlocked = false)
     {
         if (_isRouletteRunning) return; // 既に実行中なら無視
 
@@ -64,14 +66,14 @@ public class ScoreUI : MonoBehaviour
         float duration = Mathf.Lerp(minDrumRollDuration, dorumRollDuration, (float)score / 50.0f);
 
         // ドラムロールのコルーチンを開始
-        StartCoroutine(DrumRollCoroutine(duration, isBest, isCameraEffect, callback));
+        StartCoroutine(DrumRollCoroutine(duration, isBest, isCameraEffect, callback, isAchievementUnlocked));
     }
 
     public float timeBetweenResultAndComment = 0.5f;
     public float randScoreStartDeltaTime = 0.05f;
     public float randScoreEndDeltaTime = 0.15f;
 
-    private System.Collections.IEnumerator DrumRollCoroutine(float duration, bool isBest = false, bool isCameraEffect = false, Action callback = null)
+    private System.Collections.IEnumerator DrumRollCoroutine(float duration, bool isBest = false, bool isCameraEffect = false, Action callback = null, bool isAchievementUnlocked = false)
     {
         // 1. **開始音の再生**
         {
@@ -150,6 +152,11 @@ public class ScoreUI : MonoBehaviour
         {
             yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
             BestScoreText.SetActive(true);
+        }
+        if (isAchievementUnlocked)
+        {
+            yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
+            AchievementUnlockedText.SetActive(true);
         }
 
         yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
