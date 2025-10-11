@@ -169,4 +169,15 @@ public class GameManager : MonoBehaviour
     {
         return (long)Math.Exp((double)x / mean);
     }
+
+    public GameObject achievementsUIPrefab;
+    public GameObject rankingUIPrefab;
+    public void OpenAchievementsUI()
+    {
+        Instantiate(achievementsUIPrefab);
+    }
+    public void OpenRankingsUI()
+    {
+        Instantiate(rankingUIPrefab);
+    }
 }
