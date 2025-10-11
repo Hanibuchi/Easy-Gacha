@@ -125,17 +125,17 @@ public class ResultUI : MonoBehaviour
 
     public void OnClickRetry()
     {
-        Debug.Log("リトライボタンが押されました。");
+        GameManager.Instance.Restart();
     }
 
     public void OnClickRanking()
     {
-        Debug.Log("ランキングボタンが押されました。");
+        GameManager.Instance.OpenRankingsUI();
     }
 
     public void OnClickAchievement()
     {
-        Debug.Log("実績ボタンが押されました。");
+        GameManager.Instance.OpenAchievementsUI();
     }
 
     public long test_score = 100;
