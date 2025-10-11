@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     long bestScore;
     const string BEST_SCORE_KEY = "BestScore";
+    const string IS_PLAYED_BEFORE_KEY = "IsPlayedBefore";
     void Awake()
     {
         rand = new System.Random();
@@ -29,10 +31,19 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public GameObject buttonsUI;
+    public GameObject startUIPrefab;
+
     void Start()
     {
         bestScore = PlayerPrefs.GetInt(BEST_SCORE_KEY, 0);
+        if (PlayerPrefs.HasKey(IS_PLAYED_BEFORE_KEY))
+        {
+            OpenButtonsUI();
+        }
+        PlayerPrefs.SetInt(IS_PLAYED_BEFORE_KEY, 1);
+        PlayerPrefs.Save();
+        Instantiate(startUIPrefab);
     }
 
     ScoreUI scoreUI;
@@ -73,6 +84,7 @@ public class GameManager : MonoBehaviour
     public void StartRoulette()
     {
         StartCoroutine(StartRouletteRoutine());
+        OpenButtonsUI(false);
     }
 
     private IEnumerator StartRouletteRoutine()
@@ -95,6 +107,8 @@ public class GameManager : MonoBehaviour
         if (isAchievement)
             comment = achievementComment;
 
+        bool isCameraEffect = score >= scoreThreshold || isAchievement;
+
         // 1. ルーレット演出の開始
         // まずはUIでルーレット（数字が回っているような演出）を開始
         if (scoreUI == null)
@@ -102,19 +116,14 @@ public class GameManager : MonoBehaviour
             Debug.LogError("ScoreUI is not assigned.");
             yield break;
         }
-        scoreUI.StartRoulette(score, isBest);
-
-        // 2. 一定時間の待機
-        yield return new WaitForSeconds(cameraDuration);
-
-        // 3. スコア判定とカメラ演出
-        if (score >= scoreThreshold || isAchievement)
+        scoreUI.StartRoulette(score, isBest, isCameraEffect, () =>
         {
-            CameraManager.Instance.ZoomInCamera();
-            // カメラ演出の時間だけ待つ（演出時間に応じて調整）
-            yield return new WaitForSeconds(CameraManager.Instance.moveDuration);
-        }
+            StartCoroutine(DisplayResult(score, comment, isBest, isAchievement));
+        });
+    }
 
+    IEnumerator DisplayResult(long score, string comment, bool isBest, bool isAchievement)
+    {
         // 5. クラッカー演出の判定と実行
         bool shouldClack = isAchievement || (isBest && score >= scoreThreshold);
         if (shouldClack)
@@ -139,12 +148,14 @@ public class GameManager : MonoBehaviour
         else
         {
             Instantiate(restartUIPrefab);
+            OpenButtonsUI();
         }
     }
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        scoreUI.Init();
+        CameraManager.Instance.ResetCameraPosition(StartRoulette);
     }
 
 
@@ -179,5 +190,9 @@ public class GameManager : MonoBehaviour
     public void OpenRankingsUI()
     {
         Instantiate(rankingUIPrefab);
+    }
+    public void OpenButtonsUI(bool open = true)
+    {
+        buttonsUI.SetActive(open);
     }
 }
