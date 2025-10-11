@@ -18,6 +18,7 @@ public class RankingManager : MonoBehaviour
     [SerializeField] private string supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
 
     private Supabase.Client supabase;
+    public string Username => username;
     string username;
     const string USERNAME_KEY = "username";
     [SerializeField] string defaultUsername = "名もなき暇人";
