@@ -14,6 +14,7 @@ public class ScoreUI : MonoBehaviour
     public TextMeshPro CommentText;
     [Tooltip("時間差で表示されるコメント用テキスト")]
     public TextMeshPro RarityText;
+    public GameObject BestScoreText;
 
 
 
@@ -35,35 +36,41 @@ public class ScoreUI : MonoBehaviour
     public float dorumRollDuration = 2.0f; // ドラムロールの基本の長さ（秒）
     public float minDrumRollDuration = 1.0f; // 最短ドラムロール時間
 
+    public void Init()
+    {
+        // UIを初期状態に戻す
+        CommentText.text = "";
+        RarityText.text = "";
+        ScoreText.text = "";
+        BestScoreText.SetActive(false);
+    }
+
     // --- エントリポイント ---
     /// <summary>
     /// ルーレット演出を開始し、最終スコアを決定します。
     /// </summary>
     /// <param name="score">最終的に表示するスコア</param>
-    public void StartRoulette(long score, Action callback)
+    public void StartRoulette(long score, bool isBest = false, Action callback = null)
     {
         if (_isRouletteRunning) return; // 既に実行中なら無視
 
         _finalScore = score;
         _isRouletteRunning = true;
 
-        // UIを初期状態に戻す
-        CommentText.text = "";
-        RarityText.text = "";
-        ScoreText.text = "";
+        Init();
 
         // スコアの大きさに基づき、ドラムロールの長さを決定
         // スコアが大きいほど、期待感を持たせるために長くする（最大 dorumRollDuration）
         float duration = Mathf.Lerp(minDrumRollDuration, dorumRollDuration, (float)score / 50.0f);
 
         // ドラムロールのコルーチンを開始
-        StartCoroutine(DrumRollCoroutine(duration, callback));
+        StartCoroutine(DrumRollCoroutine(duration, isBest, callback));
     }
 
     public float timeBetweenResultAndComment = 0.5f;
 
     // --- ドラムロール演出 ---
-    private System.Collections.IEnumerator DrumRollCoroutine(float totalDuration, Action callback)
+    private System.Collections.IEnumerator DrumRollCoroutine(float totalDuration, bool isBest = false, Action callback = null)
     {
         // 1. **開始音の再生**
         if (drumRollStartClip != null)
@@ -126,6 +133,12 @@ public class ScoreUI : MonoBehaviour
 
         yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
         RarityText.text = $"{GameManager.Instance.CalcRarity(_finalScore)}回に1回";
+
+        if (isBest)
+        {
+            yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
+            BestScoreText.SetActive(true);
+        }
 
         _isRouletteRunning = false;
         callback?.Invoke();
