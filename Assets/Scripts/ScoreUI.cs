@@ -143,10 +143,14 @@ public class ScoreUI : MonoBehaviour
         }
 
         yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
-        CommentText.text = "この数字が出るのは大体...";
+        CommentText.text = "これ以上の数字が出るのは大体...";
 
+        long rarity = GameManager.Instance.CalcRarity(_finalScore);
         yield return new WaitForSeconds(timeBetweenResultAndComment); // 時差
-        RarityText.text = $"{GameManager.Instance.CalcRarity(_finalScore)}回に1回";
+        if (rarity == 1)
+            RarityText.text = $"{Math.Round(GameManager.Instance.CalcProbability(_finalScore) * 100)}%";
+        else
+            RarityText.text = $"{rarity}回に1回";
 
         if (isBest)
         {

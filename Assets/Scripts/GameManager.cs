@@ -192,6 +192,10 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
+    public double CalcProbability(long x)
+    {
+        return Math.Exp(-(double)x / mean);
+    }
     public long CalcRarity(long x)
     {
         return (long)Math.Exp((double)x / mean);
