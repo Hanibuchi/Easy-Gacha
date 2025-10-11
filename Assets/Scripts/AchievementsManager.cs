@@ -51,14 +51,13 @@ public class AchievementsManager : MonoBehaviour
     /// 指定されたスコアに基づいて実績の解除を試みます。
     /// </summary>
     /// <param name="score">達成したスコア（例: ガチャで出たランダムな数字）</param>
-    /// <returns>新しく解除された実績のリスト</returns>
-    public List<Achievement> TryUnlockAchievement(int score)
+    public Achievement TryUnlockAchievement(long score)
     {
-        List<Achievement> newlyUnlocked = new List<Achievement>();
 
         // 全ての実績をチェック
-        foreach (var achievement in achievements)
+        for (int i = 0; i < achievements.Count; i++)
         {
+            var achievement = achievements[i];
             // (1) 既に解除されていないか
             if (achievement.isUnlocked)
             {
@@ -70,16 +69,15 @@ public class AchievementsManager : MonoBehaviour
             {
                 // 実績を解除
                 achievement.isUnlocked = true;
-                newlyUnlocked.Add(achievement);
-
                 // 解除状況をPlayerPrefsに保存
                 SaveAchievementStatus(achievement);
 
                 Debug.Log($"実績解除: {achievement.displayName} (スコア: {score})");
+                return achievement;
             }
         }
 
-        return newlyUnlocked;
+        return null;
     }
 
     /// <summary>
@@ -109,7 +107,7 @@ public class Achievement
     // ゲーム中に管理する情報
     public bool isUnlocked = false;       // 解除されたかどうか
 }
-public enum AchievementID 
+public enum AchievementID
 {
     NONE, // 無効な状態を示すためによく使われます
     ACH1,
