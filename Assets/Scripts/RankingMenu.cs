@@ -115,7 +115,7 @@ public class RankingMenu : MonoBehaviour
 
             if (entry != null)
             {
-                entry.SetData(rank, userEntry);
+                entry.SetData(rank, userEntry, true);
                 // entryObj.GetComponent<Image>().color = new Color(0.8f, 1f, 0.8f); // 自分の行を目立たせる
             }
         }
