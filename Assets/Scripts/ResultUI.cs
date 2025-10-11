@@ -104,6 +104,7 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     public IEnumerator AnimateResultDisplay(long score, string rarity, string comment, bool isBest = false, bool isAchievement = false)
     {
+        isInteractionAllowed = false;
         // 1. 初期遅延
         yield return new WaitForSeconds(initialDelay);
 
@@ -117,25 +118,34 @@ public class ResultUI : MonoBehaviour
 
         // 4. コメント表示
         commentText.text = comment;
-
+        isInteractionAllowed = true;
         Debug.Log("結果表示アニメーション完了。");
     }
 
     // --- ボタンが押されたときに実行されるメソッド ---
 
+    private bool isInteractionAllowed = false;
     public void OnClickRetry()
     {
-        GameManager.Instance.Restart();
+        if (isInteractionAllowed)
+        {
+            Destroy(gameObject);
+            GameManager.Instance.Restart();
+        }
     }
 
     public void OnClickRanking()
     {
-        GameManager.Instance.OpenRankingsUI();
+        if (isInteractionAllowed)
+        {
+            GameManager.Instance.OpenRankingsUI();
+        }
     }
 
     public void OnClickAchievement()
     {
-        GameManager.Instance.OpenAchievementsUI();
+        if (isInteractionAllowed)
+            GameManager.Instance.OpenAchievementsUI();
     }
 
     public long test_score = 100;
