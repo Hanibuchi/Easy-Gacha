@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Collections; // Coroutineのために必要
+using System.Collections;
+using System; // Coroutineのために必要
 
 public class CameraManager : MonoBehaviour
 {
@@ -68,7 +69,7 @@ public class CameraManager : MonoBehaviour
     /// <summary>
     /// カメラを初期位置に戻す。
     /// </summary>
-    public void ResetCameraPosition()
+    public void ResetCameraPosition(Action callback = null)
     {
         // 既存の移動コルーチンがあれば停止する
         if (currentMoveCoroutine != null)
@@ -77,7 +78,7 @@ public class CameraManager : MonoBehaviour
         }
 
         // 初期位置に戻すコルーチンを開始
-        currentMoveCoroutine = StartCoroutine(MoveCameraRoutine(initialPosition, resetPosDuration));
+        currentMoveCoroutine = StartCoroutine(MoveCameraRoutine(initialPosition, resetPosDuration, callback));
     }
 
     // --- カメラ移動のコルーチン ---
@@ -86,7 +87,7 @@ public class CameraManager : MonoBehaviour
     /// カメラを指定された目標位置へ滑らかに移動させるコルーチン。
     /// </summary>
     /// <param name="targetPosition">移動先の目標位置</param>
-    private IEnumerator MoveCameraRoutine(Vector3 targetPosition, float duration)
+    private IEnumerator MoveCameraRoutine(Vector3 targetPosition, float duration, Action callback = null)
     {
         Vector3 startPosition = transform.position;
         float startTime = Time.time;
@@ -111,5 +112,6 @@ public class CameraManager : MonoBehaviour
 
         // コルーチンが終了したことを記録
         currentMoveCoroutine = null;
+        callback?.Invoke();
     }
 }
