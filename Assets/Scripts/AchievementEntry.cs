@@ -10,6 +10,7 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private GameObject unlockedIcon; // 解除済み時に表示するチェックマークなどのGameObject
     [SerializeField] private TextMeshProUGUI displayNameText; // 実績名を表示するText
     [SerializeField] GameObject detailUI;
+    HoverUI hoverUI;
 
     // === 内部データ ===
     private string _hoverMessage = "実績の詳細情報がここに表示されます。";
@@ -30,10 +31,6 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             displayNameText.text = achievementData.displayName;
         }
-        if (detailUI.TryGetComponent<DetailUI>(out var tooltipText))
-        {
-            tooltipText.Init(_hoverMessage);
-        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -42,27 +39,41 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        detailUI.SetActive(true);
+        OpenHoverUI();
     }
 
     // === IPointerEnterHandler (ホバー開始時) ===
     public void OnPointerEnter(PointerEventData eventData)
     {
         // (1) ホバーメッセージを生成・表示
-        if (detailUI != null && Pointer.current.press.isPressed)
+        if (Pointer.current.press.isPressed)
         {
-            detailUI.SetActive(true);
+            OpenHoverUI();
         }
     }
 
     // === IPointerExitHandler (ホバー終了時) ===
     public void OnPointerExit(PointerEventData eventData)
     {
-        detailUI.SetActive(false);
+        OpenHoverUI(false);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        detailUI.SetActive(false);
+        OpenHoverUI(false);
+    }
+
+    void OpenHoverUI(bool open = true)
+    {
+        if (hoverUI != null)
+        {
+            hoverUI.DestroySelf();
+            hoverUI = null;
+        }
+        if (open)
+        {
+            hoverUI = Instantiate(GameManager.Instance.HoverUIPrefab).GetComponent<HoverUI>();
+            hoverUI.SetMessage(_hoverMessage);
+        }
     }
 }

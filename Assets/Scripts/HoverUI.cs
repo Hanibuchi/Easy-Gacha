@@ -50,7 +50,7 @@ public class HoverUI : MonoBehaviour
     /// UIに表示する文字列を設定します。
     /// </summary>
     /// <param name="content">表示したい文字列</param>
-    public void SetContent(string content)
+    public void SetMessage(string content)
     {
         if (contentText != null)
         {

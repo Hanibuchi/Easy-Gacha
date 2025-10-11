@@ -211,4 +211,7 @@ public class GameManager : MonoBehaviour
     {
         buttonsUI.SetActive(open);
     }
+
+
+    public GameObject HoverUIPrefab;
 }
