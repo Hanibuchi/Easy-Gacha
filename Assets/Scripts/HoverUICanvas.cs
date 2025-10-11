@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class HoverUICanvas : MonoBehaviour
 {
-    public static GameObject Instance;
+    public static RectTransform RectTransform;
     void Awake()
     {
-        Instance = gameObject;
+        RectTransform = (RectTransform)transform;
     }
 }
