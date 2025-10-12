@@ -9,7 +9,6 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [Header("UI References")]
     [SerializeField] private GameObject unlockedIcon; // 解除済み時に表示するチェックマークなどのGameObject
     [SerializeField] private TextMeshProUGUI displayNameText; // 実績名を表示するText
-    [SerializeField] GameObject detailUI;
     HoverUI hoverUI;
 
     // === 内部データ ===

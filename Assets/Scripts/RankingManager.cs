@@ -206,6 +206,7 @@ public class RankingManager : MonoBehaviour
                 existingEntry.Score = score;
                 existingEntry.Username = username; // 名前も更新できるようにする
                 existingEntry.CreatedAt = DateTime.UtcNow;
+                existingEntry.AttemptCount = GameManager.Instance.AttemptCount;
                 // Update
                 var response = await existingEntry.Update<HighScore>();
                 Debug.Log($"Score updated for client_token: {clientToken}. New Score: {score}");
@@ -226,6 +227,7 @@ public class RankingManager : MonoBehaviour
                 Username = username,
                 Score = score,
                 CreatedAt = DateTime.UtcNow,
+                AttemptCount = GameManager.Instance.AttemptCount,
             };
 
             // Insert
@@ -282,4 +284,6 @@ public class HighScore : BaseModel
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }
+    [Column("attempt_count")]
+    public long? AttemptCount { get; set; }
 }

@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     long bestScore;
     const string BEST_SCORE_KEY = "BestScore";
     const string IS_PLAYED_BEFORE_KEY = "IsPlayedBefore";
+    const string ATTEMPT_COUNT_KEY = "AttemptCount";
+    long attemptCount;
+    public long AttemptCount => attemptCount;
     void Awake()
     {
         rand = new System.Random();
@@ -48,6 +51,7 @@ public class GameManager : MonoBehaviour
             OpenButtonsUI();
         }
         PlayerPrefs.SetInt(IS_PLAYED_BEFORE_KEY, 1);
+        attemptCount = PlayerPrefs.GetInt(ATTEMPT_COUNT_KEY, 0);
         PlayerPrefs.Save();
     }
 
@@ -105,6 +109,9 @@ public class GameManager : MonoBehaviour
     private IEnumerator StartRouletteRoutine()
     {
         var score = GenerateDiscreteExponential();
+        attemptCount++;
+        PlayerPrefs.SetInt(ATTEMPT_COUNT_KEY, (int)attemptCount);
+        PlayerPrefs.Save();
 
         bool isBest = score > bestScore;
         string comment = "";
