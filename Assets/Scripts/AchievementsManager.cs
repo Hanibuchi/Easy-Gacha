@@ -123,7 +123,7 @@ public enum AchievementID
     ACH11,
     ACH12,
     ACH13,
-    ACH14,
-    ACH15,
-    ACH16,
+    SECRET1,
+    SECRET2,
+    SECRET3,
 }
