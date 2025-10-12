@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
             // 6. 結果画面の生成
             if (resultScreenPrefab != null)
             {
-                Instantiate(resultScreenPrefab).GetComponent<ResultUI>().DisplayResult(score, CalcRarity(score).ToString(), comment, isBest, isAchievement);
+                Instantiate(resultScreenPrefab).GetComponent<ResultUI>().DisplayResult(score, GetProbabilityStr(score), comment, isBest, isAchievement);
                 scoreUI.Init();
             }
         }
@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour
         if (rarity == 1)
             return $"{Math.Round(Instance.CalcProbability(score) * 100)}%";
         else
-            return $"{rarity}回に1回";
+            return $"{rarity.ToString("N0")}回に1回";
     }
     public void Tweet(long score, bool isBest = false, long rank = 0, bool isAchievement = false, string comment = "")
     {
