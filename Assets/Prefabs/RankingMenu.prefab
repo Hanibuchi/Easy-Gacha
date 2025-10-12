@@ -236,6 +236,10 @@ PrefabInstance:
       propertyPath: m_MinHeight
       value: 300
       objectReference: {fileID: 0}
+    - target: {fileID: 7112820263438506205, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148095545703073226, guid: 50cb8d77dcd45464aa22eaf583630d05, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

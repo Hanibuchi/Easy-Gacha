@@ -70,7 +70,6 @@ public class GameManager : MonoBehaviour
     [Header("Game Parameters")]
     [Tooltip("演出の分岐に使われるしきい値1")]
     public long scoreThreshold = 200;
-    public float cameraDuration = 1.0f; // ルーレット演出の継続時間（秒）
     public float clackerDuration = 3f; // クラッカー演出の継続時間（秒）
     // Scriptのメンバー変数として追加
     public ParticleSystem clackerParticle;

@@ -34,8 +34,8 @@ public class ScoreUI : MonoBehaviour
     // --- 内部状態変数 ---
     private long _finalScore; // 最終的に表示するスコア
     private bool _isRouletteRunning = false;
-    public float dorumRollDuration = 2.0f; // ドラムロールの基本の長さ（秒）
-    public float minDrumRollDuration = 1.0f; // 最短ドラムロール時間
+    public float dorumRollDuration = 1.0f; // ドラムロールの基本の長さ（秒）
+    public float minDrumRollDuration = 0f; // 最短ドラムロール時間
 
     public void Init()
     {
