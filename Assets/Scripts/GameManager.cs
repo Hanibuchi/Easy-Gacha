@@ -145,6 +145,9 @@ public class GameManager : MonoBehaviour
         }, isAchievement);
     }
 
+    public AudioSource audioSource;
+    public AudioClip clackerClip;
+
     IEnumerator DisplayResult(long score, string comment, bool isBest, bool isAchievement)
     {
         // 5. クラッカー演出の判定と実行
@@ -157,6 +160,8 @@ public class GameManager : MonoBehaviour
                 clackerParticle.Play();
                 Debug.Log("クラッカーが鳴った！🎊");
             }
+            
+            audioSource.PlayOneShot(clackerClip);
 
             // クラッカー演出が終了するまで待機
             yield return new WaitForSeconds(clackerDuration);
