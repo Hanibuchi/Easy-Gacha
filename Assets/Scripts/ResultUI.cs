@@ -2,7 +2,8 @@ using UnityEngine;
 using TMPro; // TextMeshProを使用
 using System.Collections; // コルーチンのために必要
 using System;
-using UnityEngine.UI; // Funcデリゲートのために必要
+using UnityEngine.UI;
+using System.Threading.Tasks; // Funcデリゲートのために必要
 
 public class ResultUI : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class ResultUI : MonoBehaviour
     public Button retryButton;
     public Button rankingButton;
     public Button achievementButton;
+    public Button tweetButton;
 
 
     void Awake()
@@ -78,6 +80,9 @@ public class ResultUI : MonoBehaviour
         {
             Debug.LogError("Achievement Button is not assigned in the Inspector.");
         }
+
+        tweetButton.onClick.RemoveAllListeners();
+        tweetButton.onClick.AddListener(OnClickTweet);
     }
 
     [Header("Conditional UI")]
@@ -143,7 +148,7 @@ public class ResultUI : MonoBehaviour
             achievementObject.SetActive(true);
             Debug.Log("実績解除オブジェクトをアクティブにしました。");
         }
-        
+
 
         // 4. コメント表示
         commentText.text = comment;
@@ -175,6 +180,22 @@ public class ResultUI : MonoBehaviour
     {
         if (isInteractionAllowed)
             GameManager.Instance.OpenAchievementsUI();
+    }
+
+    bool isTweetButtonClicked = false;
+    public async void OnClickTweet()
+    {
+        if (!isInteractionAllowed || isTweetButtonClicked) return;
+
+        isTweetButtonClicked = true;
+
+        int rank = 0;
+        if (isBest)
+        {
+            rank = await RankingManager.Instance.GetUserRankAsync(RankingManager.Instance.ClientToken);
+        }
+        GameManager.Instance.Tweet(currentScore, isBest, rank, isAchievement, currentComment);
+        isTweetButtonClicked = false;
     }
 
     public long test_score = 100;

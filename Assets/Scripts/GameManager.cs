@@ -222,4 +222,26 @@ public class GameManager : MonoBehaviour
 
 
     public GameObject HoverUIPrefab;
+
+    public string GetProbabilityStr(long score)
+    {
+        long rarity = Instance.CalcRarity(score);
+        if (rarity == 1)
+            return $"{Math.Round(Instance.CalcProbability(score) * 100)}%";
+        else
+            return $"{rarity}回に1回";
+    }
+    public void Tweet(long score, bool isBest = false, long rank = 0, bool isAchievement = false, string comment = "")
+    {
+        string text = $"🏆 スコア: {score}\n";
+        if (isBest)
+            text += $"📉 これ以上の数字が出る確率: {GetProbabilityStr(score)}\n" +
+            $"🌍 現在のランキング: {rank}位\n";
+        if (isAchievement)
+            text += $"🌟 実績解除！\n" + $"{comment}\n";
+        text += $"\nクリックでガチャを引くだけ！\n" +
+        $"あなたはこの確率を超えられるか？いますぐ運試し！\n";
+
+        naichilab.UnityRoomTweet.Tweet("exp_gacha", text, "指数分布ガチャ");
+    }
 }
