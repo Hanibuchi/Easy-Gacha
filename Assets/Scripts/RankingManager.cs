@@ -6,6 +6,8 @@ using System;
 using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
 using unityroom.Api;
+using UnityEngine.Networking;
+using UnityEditor.Compilation;
 
 public class RankingManager : MonoBehaviour
 {
@@ -240,11 +242,57 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-    public long score;
+    string scoreTableName = "ScoreRanking";
+    string scoreTableURL => $"{supabaseUrl}/rest/v1/{scoreTableName}";
+
+    public async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
+    {
+        var payload = new
+        {
+            client_token = clientToken,
+            username = username,
+            score = score,
+            attempt_count = attemptCount,
+        };
+        string json = JsonUtility.ToJson(payload);
+
+
+        using UnityWebRequest request = new(scoreTableURL, "POST");
+        byte[] bodyRow = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRow);
+        request.downloadHandler = new DownloadHandlerBuffer();
+
+        request.SetRequestHeader("apikey", supabaseAnonKey);
+        request.SetRequestHeader("Authorization", $"Bearer {supabaseAnonKey}");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Prefer", "return=minimal");
+
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+            await Task.Yield();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogError($"エラー: {request.error}\n詳細: {request.downloadHandler.text}");
+            return false;
+        }
+    }
+
+    public long test_score;
     public string test_username;
+    public long test_attempt_count;
     public async void Test()
     {
-        var result = await SubmitScoreAsync(score, test_username, _clientToken);
+        var result = await SubmitScoreAsync(test_score, test_username, _clientToken);
+        Debug.Log($"result: {result}");
+    }
+    public async void Test_new()
+    {
+        var result = await SubmitScoreAsync2(test_score, test_username, _clientToken, test_attempt_count);
         Debug.Log($"result: {result}");
     }
 
