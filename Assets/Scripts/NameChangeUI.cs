@@ -18,8 +18,10 @@ public class NameChangeUI : MonoBehaviour
     {
         this.parentMenu = parent;
 
-        // 初期値として現在のユーザー名を設定（もしあれば）
-        // ToDo: PlayerPrefsなどから現在のユーザー名を取得して設定
+        if (!string.IsNullOrEmpty(RankingManager.Instance.Username))
+        {
+            nameInputField.text = RankingManager.Instance.Username;
+        }
 
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);
     }

@@ -9,7 +9,7 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [Header("UI References")]
     [SerializeField] private GameObject unlockedIcon; // 解除済み時に表示するチェックマークなどのGameObject
     [SerializeField] private TextMeshProUGUI displayNameText; // 実績名を表示するText
-    [SerializeField] GameObject detailUI;
+    HoverUI hoverUI;
 
     // === 内部データ ===
     private string _hoverMessage = "実績の詳細情報がここに表示されます。";
@@ -17,11 +17,25 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
     // PopUpを生成・設定する関数 (AchievementsManagerから情報を渡すために使用)
     public void Initialize(Achievement achievementData)
     {
-        // データを内部に保持し、UIに反映
-        _hoverMessage = $"{achievementData.displayName}\n<size=80%>{achievementData.comment}</size>";
-
         // 達成度合いをUIに反映
         bool isUnlocked = achievementData.isUnlocked;
+        bool isPinPoint = achievementData.maxScore - achievementData.minScore == 0;
+
+        // データを内部に保持し、UIに反映
+        if (isUnlocked)
+        {
+            if (isPinPoint)
+                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}\n{GameManager.Instance.CalcRarityPinPoint(achievementData.minScore)}回に1回\n{achievementData.comment}";
+            else
+                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}~\n{GameManager.Instance.CalcRarity(achievementData.minScore)}回に1回\n{achievementData.comment}";
+        }
+        else
+        {
+            if (isPinPoint)
+                _hoverMessage = $"<size=120%>???</size>\n{new string('?', achievementData.minScore.ToString().Length)}";
+            else
+                _hoverMessage = $"<size=120%>???</size>\n{achievementData.minScore}~";
+        }
 
         unlockedIcon.SetActive(isUnlocked);
 
@@ -29,10 +43,6 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (isUnlocked)
         {
             displayNameText.text = achievementData.displayName;
-        }
-        if (detailUI.TryGetComponent<DetailUI>(out var tooltipText))
-        {
-            tooltipText.Init(_hoverMessage);
         }
     }
 
@@ -42,27 +52,41 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        detailUI.SetActive(true);
+        OpenHoverUI();
     }
 
     // === IPointerEnterHandler (ホバー開始時) ===
     public void OnPointerEnter(PointerEventData eventData)
     {
         // (1) ホバーメッセージを生成・表示
-        if (detailUI != null && Pointer.current.press.isPressed)
+        if (Pointer.current.press.isPressed)
         {
-            detailUI.SetActive(true);
+            OpenHoverUI();
         }
     }
 
     // === IPointerExitHandler (ホバー終了時) ===
     public void OnPointerExit(PointerEventData eventData)
     {
-        detailUI.SetActive(false);
+        OpenHoverUI(false);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        detailUI.SetActive(false);
+        OpenHoverUI(false);
+    }
+
+    void OpenHoverUI(bool open = true)
+    {
+        if (hoverUI != null)
+        {
+            hoverUI.DestroySelf();
+            hoverUI = null;
+        }
+        if (open)
+        {
+            hoverUI = Instantiate(GameManager.Instance.HoverUIPrefab).GetComponent<HoverUI>();
+            hoverUI.SetMessage(_hoverMessage);
+        }
     }
 }

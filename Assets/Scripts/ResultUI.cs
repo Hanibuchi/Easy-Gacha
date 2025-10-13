@@ -2,7 +2,8 @@ using UnityEngine;
 using TMPro; // TextMeshProを使用
 using System.Collections; // コルーチンのために必要
 using System;
-using UnityEngine.UI; // Funcデリゲートのために必要
+using UnityEngine.UI;
+using System.Threading.Tasks; // Funcデリゲートのために必要
 
 public class ResultUI : MonoBehaviour
 {
@@ -28,11 +29,20 @@ public class ResultUI : MonoBehaviour
     public Button retryButton;
     public Button rankingButton;
     public Button achievementButton;
+    public Button tweetButton;
 
 
     void Awake()
     {
         // ★★★ ボタンイベントの自動登録 ★★★
+        if (newRecordObject != null)
+        {
+            newRecordObject.SetActive(false);
+        }
+        if (achievementObject != null)
+        {
+            achievementObject.SetActive(false);
+        }
 
         // 1. リトライボタン
         if (retryButton != null)
@@ -70,8 +80,16 @@ public class ResultUI : MonoBehaviour
         {
             Debug.LogError("Achievement Button is not assigned in the Inspector.");
         }
+
+        tweetButton.onClick.RemoveAllListeners();
+        tweetButton.onClick.AddListener(OnClickTweet);
     }
 
+    [Header("Conditional UI")]
+    [Tooltip("新記録の場合にActiveにするGameObject")]
+    public GameObject newRecordObject;
+    [Tooltip("実績解除の場合にActiveにするGameObject")]
+    public GameObject achievementObject;
     public void Start()
     {
         // 演出コルーチンを開始
@@ -104,6 +122,7 @@ public class ResultUI : MonoBehaviour
     /// </summary>
     public IEnumerator AnimateResultDisplay(long score, string rarity, string comment, bool isBest = false, bool isAchievement = false)
     {
+        isInteractionAllowed = false;
         // 1. 初期遅延
         yield return new WaitForSeconds(initialDelay);
 
@@ -115,27 +134,68 @@ public class ResultUI : MonoBehaviour
         rarityText.text = $"{rarity}";
         yield return new WaitForSeconds(commentDelay);
 
+
+
+        if (isBest && newRecordObject != null)
+        {
+            newRecordObject.SetActive(true);
+            Debug.Log("新記録オブジェクトをアクティブにしました。");
+        }
+
+        // 実績解除の場合は対応するGameObjectをアクティブにする
+        if (isAchievement && achievementObject != null)
+        {
+            achievementObject.SetActive(true);
+            Debug.Log("実績解除オブジェクトをアクティブにしました。");
+        }
+
+
         // 4. コメント表示
         commentText.text = comment;
-
+        isInteractionAllowed = true;
         Debug.Log("結果表示アニメーション完了。");
     }
 
     // --- ボタンが押されたときに実行されるメソッド ---
 
+    private bool isInteractionAllowed = false;
     public void OnClickRetry()
     {
-        Debug.Log("リトライボタンが押されました。");
+        if (isInteractionAllowed)
+        {
+            Destroy(gameObject);
+            GameManager.Instance.Restart();
+        }
     }
 
     public void OnClickRanking()
     {
-        Debug.Log("ランキングボタンが押されました。");
+        if (isInteractionAllowed)
+        {
+            GameManager.Instance.OpenRankingsUI();
+        }
     }
 
     public void OnClickAchievement()
     {
-        Debug.Log("実績ボタンが押されました。");
+        if (isInteractionAllowed)
+            GameManager.Instance.OpenAchievementsUI();
+    }
+
+    bool isTweetButtonClicked = false;
+    public async void OnClickTweet()
+    {
+        if (!isInteractionAllowed || isTweetButtonClicked) return;
+
+        isTweetButtonClicked = true;
+
+        int rank = 0;
+        if (isBest)
+        {
+            rank = await RankingManager.Instance.GetMyRankAsync();
+        }
+        GameManager.Instance.Tweet(currentScore, isBest, rank, isAchievement, currentComment);
+        isTweetButtonClicked = false;
     }
 
     public long test_score = 100;
