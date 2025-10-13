@@ -9,6 +9,7 @@ public class ButtonsUI : MonoBehaviour
     private Button achievementsButton; // 図鑑・実績などのボタン
     [SerializeField]
     private Button rankingButton;      // ランキング表示ボタン
+    private const string MasterVolumeKey = "MasterVolume";
 
     void Start()
     {
@@ -18,9 +19,13 @@ public class ButtonsUI : MonoBehaviour
         rankingButton.onClick.AddListener(OnRankingClicked);
 
         volumeSlider.onValueChanged.AddListener(SetMasterVolume);
-        volumeSlider.value = 0.5f;
 
-        Debug.Log("ButtonsUIの初期設定が完了しました。");
+        // PlayerPrefsから保存された音量設定を読み込む（保存された値がなければデフォルト値として0.5fを使用）
+        float savedVolume = PlayerPrefs.GetFloat(MasterVolumeKey, 0.5f);
+
+        // 読み込んだ値でスライダーの見た目と実際の音量を初期化
+        volumeSlider.value = savedVolume;
+        AudioListener.volume = savedVolume;
     }
 
     // 図鑑ボタンが押されたときの処理
@@ -41,6 +46,12 @@ public class ButtonsUI : MonoBehaviour
     // スライダーの値（0.0〜1.0）を受け取り、マスター音量に設定するメソッド
     public void SetMasterVolume(float volume)
     {
+        // マスター音量を設定
         AudioListener.volume = volume;
+
+        // --- 音量設定の保存 ---
+        // 変更された音量設定をPlayerPrefsに保存
+        PlayerPrefs.SetFloat(MasterVolumeKey, volume);
+        PlayerPrefs.Save(); // 念のためSaveを呼び出して即時書き込み
     }
 }
