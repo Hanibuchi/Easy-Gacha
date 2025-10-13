@@ -218,6 +218,47 @@ public class RankingManager : MonoBehaviour
             return null;
         }
     }
+    async Task<RankingEntry> GetUserScoreAsync2(string clientToken)
+    {
+        string requestUrl = $"{scoreTableUrl}?select=*&client_token=eq.{clientToken}&limit=1";
+
+        using UnityWebRequest request = UnityWebRequest.Get(requestUrl);
+        request.SetRequestHeader("apikey", supabaseAnonKey);
+        request.SetRequestHeader("Authorization", $"Bearer {supabaseAnonKey}");
+
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+            await Task.Yield();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            var jsonResponse = request.downloadHandler.text;
+
+            if (string.IsNullOrEmpty(jsonResponse) || jsonResponse == "[]")
+            {
+                Debug.Log($"指定されたClientTokenのデータは見つかりませんでした: {clientToken}");
+                return null;
+            }
+
+            string wrappedJson = $"{{\"entries\":{jsonResponse}}}";
+            RankingsList_ list = JsonUtility.FromJson<RankingsList_>(wrappedJson);
+
+            if (list != null && list.entries != null && list.entries.Count > 0)
+            {
+                return list.entries[0].ToRankingEntry();
+            }
+            else
+            {
+                Debug.LogWarning("データが見つかりましたが、JSONのパースに失敗しました。");
+                return null;
+            }
+        }
+        else
+        {
+            Debug.LogError($"ユーザースコアの取得エラー: {request.error}\n詳細: {request.downloadHandler.text}");
+            return null;
+        }
+    }
 
     public async Task<int> GetUserRankAsync(string clientToken)
     {
@@ -366,6 +407,7 @@ public class RankingManager : MonoBehaviour
     public long test_score;
     public string test_username;
     public long test_attempt_count;
+    public string test_clientToken;
     public async void Test()
     {
         var result = await SubmitScoreAsync2(test_score, test_username, _clientToken, test_attempt_count);
@@ -382,11 +424,11 @@ public class RankingManager : MonoBehaviour
             // test_text.text = str;
         }
     }
-    // public async void Test3()
-    // {
-    //     var result = await GetMyScoreAsync(chientToken);
-    //     Debug.Log($"score: {result.Score}, name: {result.Username}, chientToken: {result.ClientToken}");
-    // }
+    public async void Test3()
+    {
+        var result = await GetUserScoreAsync2(test_clientToken);
+        Debug.Log($"score: {result.score}, name: {result.username}, chientToken: {result.client_token}, attemptCount: {result.attempt_count}, created_at: {result.created_at}");
+    }
 
 
 }
