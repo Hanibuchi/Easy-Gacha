@@ -29,7 +29,7 @@ public class RankingEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         // スコアはlong型なので、適切な形式で表示します。
         scoreText.text = data.score.ToString("N0"); // 例: 1,234,567 の形式
         usernameText.text = data.username;
-        _hoverMessage = $"{GameManager.Instance.CalcRarity(data.score).ToString("N0")}回に1回\n{data.created_at.ToString("yyyy/MM/dd H時")}\n{data.attempt_count.ToString("N0")}回目の挑戦";
+        _hoverMessage = $"{GameManager.Instance.GetProbabilityStr(data.score)}\n{data.created_at.ToString("yyyy/MM/dd H時")}\n{data.attempt_count.ToString("N0")}回目の挑戦";
         if (isMyScore)
         {
             rankText.fontStyle = FontStyles.Underline;

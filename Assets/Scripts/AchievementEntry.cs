@@ -27,7 +27,7 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
             if (isPinPoint)
                 _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}\n{GameManager.Instance.CalcRarityPinPoint(achievementData.minScore)}回に1回\n{achievementData.comment}";
             else
-                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}~\n{GameManager.Instance.CalcRarity(achievementData.minScore)}回に1回\n{achievementData.comment}";
+                _hoverMessage = $"<size=120%>{achievementData.displayName}</size>\n{achievementData.minScore}~\n{GameManager.Instance.GetProbabilityStr(achievementData.minScore)}\n{achievementData.comment}";
         }
         else
         {

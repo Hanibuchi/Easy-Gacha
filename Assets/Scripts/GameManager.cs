@@ -205,7 +205,7 @@ public class GameManager : MonoBehaviour
     }
     public long CalcRarity(long x)
     {
-        return (long)Math.Exp((double)x / mean);
+        return (long)Math.Exp((double)(x - 1) / mean);
     }
     public long CalcRarityPinPoint(long x)
     {
