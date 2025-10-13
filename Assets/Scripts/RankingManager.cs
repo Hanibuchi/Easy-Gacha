@@ -77,7 +77,7 @@ public class RankingManager : MonoBehaviour
         }
         else
         {
-            var result = await SubmitScoreAsync2(score, username, _clientToken, GameManager.Instance.AttemptCount);
+            var result = await SubmitScoreAsync(score, username, _clientToken, GameManager.Instance.AttemptCount);
             if (!result)
                 Debug.LogWarning("Failed to submit score.");
         }
@@ -276,75 +276,6 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-    // --- 4. スコア登録/更新関数 ---
-    /// <summary>
-    /// スコアをSupabaseに登録または更新します。
-    /// client_tokenとusernameが一致するデータがあれば更新し、なければ新規登録します。
-    /// </summary>
-    /// <param name="score">登録するスコア</param>
-    /// <param name="username">プレイヤー名</param>
-    /// <param name="clientToken">プレイヤー識別用トークン</param>
-    /// <returns>成功した場合はtrue</returns>
-    public async Task<bool> SubmitScoreAsync(long score, string username, string clientToken)
-    {
-        UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
-        if (supabase == null)
-        {
-            Debug.LogError("Supabase is not initialized.");
-            return false;
-        }
-
-        // client_tokenを識別子として既存のデータを検索
-        var existingScores = await supabase
-            .From<HighScore>()
-            .Filter("client_token", Supabase.Postgrest.Constants.Operator.Equals, clientToken)
-            .Get();
-
-        // 既存のデータが見つかったか確認
-        var existingEntry = existingScores.Models.FirstOrDefault();
-
-        if (existingEntry != null)
-        {
-            // 既存データが見つかった場合、**スコアがより高ければ**更新する
-            if (score >= existingEntry.Score)
-            {
-                existingEntry.Score = score;
-                existingEntry.Username = username; // 名前も更新できるようにする
-                existingEntry.CreatedAt = DateTime.UtcNow;
-                existingEntry.AttemptCount = GameManager.Instance.AttemptCount;
-                // Update
-                var response = await existingEntry.Update<HighScore>();
-                Debug.Log($"Score updated for client_token: {clientToken}. New Score: {score}");
-                return response != null;
-            }
-            else
-            {
-                Debug.Log($"Existing score is higher or equal. No update needed. Current Score: {existingEntry.Score}");
-                return true; // 更新はしなかったが、処理としては成功
-            }
-        }
-        else
-        {
-            // 既存データが見つからなかった場合、新規登録
-            var newScore = new HighScore
-            {
-                ClientToken = clientToken,
-                Username = username,
-                Score = score,
-                CreatedAt = DateTime.UtcNow,
-                AttemptCount = GameManager.Instance.AttemptCount,
-            };
-
-            // Insert
-            var response = await supabase
-                .From<HighScore>()
-                .Insert(newScore);
-
-            Debug.Log($"New score submitted for client_token: {clientToken}. Score: {score}");
-            return response.Models.Count > 0;
-        }
-    }
-
     string scoreTableName = "ScoreRanking";
     string scoreTableUrl => $"{supabaseUrl}/rest/v1/{scoreTableName}";
 
@@ -357,7 +288,7 @@ public class RankingManager : MonoBehaviour
         public long score;
         public long attempt_count;
     }
-    async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
+    async Task<bool> SubmitScoreAsync(long score, string username, string clientToken, long attemptCount)
     {
         SubmitPayload payload = new()
         {
@@ -451,7 +382,7 @@ public class RankingManager : MonoBehaviour
     public string test_clientToken;
     public async void Test()
     {
-        var result = await SubmitScoreAsync2(test_score, test_username, _clientToken, test_attempt_count);
+        var result = await SubmitScoreAsync(test_score, test_username, _clientToken, test_attempt_count);
         Debug.Log($"result: {result}");
     }
     // [SerializeField] TMP_Text test_text;
