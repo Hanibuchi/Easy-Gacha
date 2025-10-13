@@ -87,6 +87,7 @@ public class AchievementEntry : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             hoverUI = Instantiate(GameManager.Instance.HoverUIPrefab).GetComponent<HoverUI>();
             hoverUI.SetMessage(_hoverMessage);
+            hoverUI.gameObject.SetActive(true);
         }
     }
 }

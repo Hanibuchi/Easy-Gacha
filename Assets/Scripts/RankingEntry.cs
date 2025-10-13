@@ -82,6 +82,7 @@ public class RankingEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         {
             hoverUI = Instantiate(GameManager.Instance.HoverUIPrefab).GetComponent<HoverUI>();
             hoverUI.SetMessage(_hoverMessage);
+            hoverUI.gameObject.SetActive(true);
         }
     }
 }
