@@ -1,11 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -206,7 +201,7 @@ public class GameManager : MonoBehaviour
 
     public double CalcProbability(long x)
     {
-        return Math.Exp(-(double)x / mean);
+        return Math.Exp(-(double)(x - 1) / mean);
     }
     public long CalcRarity(long x)
     {
