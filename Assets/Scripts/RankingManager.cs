@@ -123,7 +123,7 @@ public class RankingManager : MonoBehaviour
         public long score;
 
         public string created_at;
-        public long? attempt_count;
+        public long attempt_count;
         public RankingEntry ToRankingEntry()
         {
             return new RankingEntry
@@ -149,7 +149,7 @@ public class RankingManager : MonoBehaviour
         public long score;
 
         public DateTime created_at;
-        public long? attempt_count;
+        public long attempt_count;
     }
     [Serializable]
     class RankingsList_
@@ -367,7 +367,7 @@ public class RankingManager : MonoBehaviour
     string scoreTableName = "ScoreRanking";
     string scoreTableUrl => $"{supabaseUrl}/rest/v1/{scoreTableName}";
 
-    public async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
+    async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
     {
         var payload = new
         {
@@ -404,6 +404,57 @@ public class RankingManager : MonoBehaviour
         }
     }
 
+    [Serializable]
+    private class UpdatePayload
+    {
+        public string username;
+        public long score;
+        public string created_at;
+        public long attempt_count;
+    }
+    async Task<bool> UpdateScoreAsync(RankingEntry rankingEntry)
+    {
+        if (rankingEntry == null || string.IsNullOrEmpty(rankingEntry.client_token))
+        {
+            Debug.LogError("無効なRankingEntry、またはclient_tokenが空のため更新できません。");
+            return false;
+        }
+        UpdatePayload payload = new()
+        {
+            username = rankingEntry.username,
+            score = rankingEntry.score,
+            created_at = rankingEntry.created_at.ToString("o"),
+            attempt_count = rankingEntry.attempt_count
+        };
+        string json = JsonUtility.ToJson(payload);
+
+        string requestUrl = $"{scoreTableUrl}?client_token=eq.{rankingEntry.client_token}";
+        using UnityWebRequest request = new(requestUrl, "PATCH");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+
+        request.SetRequestHeader("apikey", supabaseAnonKey);
+        request.SetRequestHeader("Authorization", $"Bearer {supabaseAnonKey}");
+        request.SetRequestHeader("Content-Type", "application/json");
+        request.SetRequestHeader("Prefer", "return=minimal");
+
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+            await Task.Yield();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Debug.Log($"スコアの更新に成功しました。 client_token: {rankingEntry.client_token}");
+            return true;
+        }
+        else
+        {
+            Debug.LogError($"スコアの更新に失敗しました。エラー: {request.error}\n詳細: {request.downloadHandler.text}");
+            return false;
+        }
+    }
+
     public long test_score;
     public string test_username;
     public long test_attempt_count;
@@ -430,7 +481,15 @@ public class RankingManager : MonoBehaviour
         Debug.Log($"score: {result.score}, name: {result.username}, chientToken: {result.client_token}, attemptCount: {result.attempt_count}, created_at: {result.created_at}");
     }
 
-
+    public async void Test4()
+    {
+        var result = await GetUserScoreAsync2(test_clientToken);
+        result.attempt_count = test_attempt_count;
+        result.username = test_username;
+        result.score = test_score;
+        bool isSuccess = await UpdateScoreAsync(result);
+        Debug.Log($"isSuccess: {isSuccess}");
+    }
 }
 
 

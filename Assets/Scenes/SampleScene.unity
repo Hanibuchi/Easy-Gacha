@@ -1452,7 +1452,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1575234966}
         m_TargetAssemblyTypeName: RankingManager, Assembly-CSharp
-        m_MethodName: Test3
+        m_MethodName: Test4
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2040,10 +2040,10 @@ MonoBehaviour:
   supabaseUrl: https://vlaaenmampgicpczttet.supabase.co
   supabaseAnonKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYWFlbm1hbXBnaWNwY3p0dGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk3NDE2NTcsImV4cCI6MjA3NTMxNzY1N30.BKnzYpVzR91j2dnDk-dtLmlb9iYYJg0_GGTlJV_JRz8
   defaultUsername: "\u901A\u308A\u3059\u304C\u308A\u306E\u6311\u6226\u8005"
-  test_score: 123
-  test_username: "\u30C6\u30B9\u30C8\u30E6\u30FCz\uFF0D\u3042"
-  test_attempt_count: 100
-  test_clientToken: 0b571f8b-b6aa-4a44-b6b3-b3115eb6ec1a
+  test_score: 200
+  test_username: "\u30CF\u30CB\u30C6\u30C3\u30AF\uFF12"
+  test_attempt_count: 90
+  test_clientToken: 24feac76-df95-4f84-bb2e-d6abbaf27113
 --- !u!4 &1575234967
 Transform:
   m_ObjectHideFlags: 0
