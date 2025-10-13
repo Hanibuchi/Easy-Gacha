@@ -89,9 +89,14 @@ public class RankingManager : MonoBehaviour
         PlayerPrefs.SetString(USERNAME_KEY, username);
         PlayerPrefs.Save();
 
-        var mydata = await GetUserScoreAsync(_clientToken);
+        var mydata = await GetUserScoreAsync2(_clientToken);
         if (mydata != null)
-            await SubmitScoreAsync(mydata.Score, newUsername, _clientToken);
+        {
+            mydata.username = newUsername;
+            var result = await UpdateScoreAsync(mydata);
+            if (!result)
+                Debug.LogWarning("Failed to submit score.");
+        }
     }
 
     // --- 3. ランキング情報取得関数 ---
