@@ -142,7 +142,7 @@ public class RankingManager : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
             string jsonResponse = request.downloadHandler.text;
-            Debug.Log($"サーバーからの応答: {jsonResponse}");
+            // Debug.Log($"サーバーからの応答: {jsonResponse}");
 
             string wrappedJson = $"{{\"entries\":{jsonResponse}}}";
             RankingsList_ list = JsonUtility.FromJson<RankingsList_>(wrappedJson);
