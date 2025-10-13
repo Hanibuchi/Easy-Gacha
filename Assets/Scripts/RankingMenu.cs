@@ -52,7 +52,7 @@ public class RankingMenu : MonoBehaviour
         }
 
         // --- RankingManagerからデータを取得 ---
-        List<HighScore> rankingData = await RankingManager.Instance.GetRankingAsync(30); // 上位30件を取得
+        List<RankingManager.RankingEntry> rankingData = await RankingManager.Instance.GetRankingAsync(30); // 上位30件を取得
 
         if (loadingText != null) loadingText.text = ""; // ロード完了
 
@@ -82,8 +82,6 @@ public class RankingMenu : MonoBehaviour
     /// </summary>
     async Task DisplayPersonalRank()
     {
-        string myClientToken = RankingManager.Instance.ClientToken;
-
         // 既存の自分のエントリをクリア (更新のため)
         foreach (Transform child in personalEntryParent)
         {
@@ -93,7 +91,7 @@ public class RankingMenu : MonoBehaviour
         // --- 自分のデータと順位を取得 ---
 
         // 1. 自分のデータ (スコア) を取得
-        HighScore userEntry = await RankingManager.Instance.GetUserScoreAsync(myClientToken);
+        RankingManager.RankingEntry userEntry = await RankingManager.Instance.GetMyScoreAsync();
 
         if (userEntry == null)
         {
@@ -103,7 +101,7 @@ public class RankingMenu : MonoBehaviour
         }
 
         // 2. 自分の順位を計算
-        int rank = await RankingManager.Instance.GetUserRankAsync(myClientToken);
+        int rank = await RankingManager.Instance.GetUserRankAsync2();
 
         if (rank > 0)
         {

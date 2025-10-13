@@ -22,14 +22,14 @@ public class RankingEntry : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     /// ランキングエントリに情報を設定し、UIに表示します。
     /// </summary>
     /// <param name="rank">順位</param>
-    /// <param name="data">HighScoreデータ</param>
-    public void SetData(int rank, HighScore data, bool isMyScore = false)
+    /// <param name="data">RankingEntryデータ</param>
+    public void SetData(int rank, RankingManager.RankingEntry data, bool isMyScore = false)
     {
         rankText.text = $"{rank}";
         // スコアはlong型なので、適切な形式で表示します。
-        scoreText.text = data.Score.ToString("N0"); // 例: 1,234,567 の形式
-        usernameText.text = data.Username;
-        _hoverMessage = $"{GameManager.Instance.CalcRarity(data.Score).ToString("N0")}回に1回\n{data.CreatedAt.ToString("yyyy/MM/dd H時")}\n{(data.AttemptCount ?? 0L).ToString("N0")}回目の挑戦";
+        scoreText.text = data.score.ToString("N0"); // 例: 1,234,567 の形式
+        usernameText.text = data.username;
+        _hoverMessage = $"{GameManager.Instance.CalcRarity(data.score).ToString("N0")}回に1回\n{data.created_at.ToString("yyyy/MM/dd H時")}\n{data.attempt_count.ToString("N0")}回目の挑戦";
         if (isMyScore)
         {
             rankText.fontStyle = FontStyles.Underline;

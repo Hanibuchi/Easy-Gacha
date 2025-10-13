@@ -99,38 +99,6 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-    // --- 3. ランキング情報取得関数 ---
-    /// <summary>
-    /// Supabaseからランキング情報を取得します。
-    /// </summary>
-    /// <param name="limit">取得する件数</param>
-    /// <returns>HighScoreオブジェクトのリスト（降順）</returns>
-    public async Task<List<HighScore>> GetRankingAsync(int limit = 10)
-    {
-        if (supabase == null)
-        {
-            Debug.LogError("Supabase is not initialized.");
-            return new List<HighScore>();
-        }
-
-        try
-        {
-            // high_scoresテーブルからスコアが高い順に指定件数を取得
-            var response = await supabase
-                .From<HighScore>()
-                .Order(x => x.Score, Supabase.Postgrest.Constants.Ordering.Descending)
-                .Limit(limit)
-                .Get();
-
-            // 取得したデータをList<HighScore>として返す
-            return response.Models;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to fetch ranking: {e.Message}");
-            return new List<HighScore>();
-        }
-    }
     [Serializable]
     class RankingEntry_
     {
@@ -177,7 +145,7 @@ public class RankingManager : MonoBehaviour
         public List<RankingEntry_> entries;
     }
 
-    public async Task<List<RankingEntry>> GetRankingAsync2(int limit = 10)
+    public async Task<List<RankingEntry>> GetRankingAsync(int limit = 10)
     {
         string requestUrl = $"{scoreTableUrl}?select=*&order=score.desc&limit={limit}";
         using UnityWebRequest request = UnityWebRequest.Get(requestUrl);
@@ -238,6 +206,11 @@ public class RankingManager : MonoBehaviour
             return null;
         }
     }
+    public Task<RankingEntry> GetMyScoreAsync()
+    {
+        return GetUserScoreAsync2(_clientToken);
+    }
+
     async Task<RankingEntry> GetUserScoreAsync2(string clientToken)
     {
         string requestUrl = $"{scoreTableUrl}?select=*&client_token=eq.{clientToken}&limit=1";
@@ -545,7 +518,7 @@ public class RankingManager : MonoBehaviour
     // [SerializeField] TMP_Text test_text;
     public async void Test2()
     {
-        var result = await GetRankingAsync2(10);
+        var result = await GetRankingAsync(10);
         for (int i = 0; i < result.Count; i++)
         {
             string str = $"rank: {i}, score: {result[i].score}, name: {result[i].username}, chientToken: {result[i].client_token}, attemptCount: {result[i].attempt_count}";
