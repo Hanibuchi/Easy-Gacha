@@ -23,7 +23,7 @@ public class RankingManager : MonoBehaviour
     public string Username => username;
     string username;
     const string USERNAME_KEY = "username";
-    [SerializeField] string defaultUsername = "名もなき暇人";
+    [SerializeField] string defaultUsername = "通りすがりの挑戦者";
 
     public string ClientToken => _clientToken;
     string _clientToken;
@@ -65,7 +65,22 @@ public class RankingManager : MonoBehaviour
 
     public async void SubmitBestScore(long score)
     {
-        await SubmitScoreAsync(score, username, _clientToken);
+        var rankingEntry = await GetUserScoreAsync2(_clientToken);
+        if (rankingEntry != null)
+        {
+            rankingEntry.score = score;
+            rankingEntry.attempt_count = GameManager.Instance.AttemptCount;
+            rankingEntry.created_at = DateTime.UtcNow;
+            var result = await UpdateScoreAsync(rankingEntry);
+            if (!result)
+                Debug.LogWarning("Failed to submit score.");
+        }
+        else
+        {
+            var result = await SubmitScoreAsync2(score, username, _clientToken, GameManager.Instance.AttemptCount);
+            if (!result)
+                Debug.LogWarning("Failed to submit score.");
+        }
     }
 
     public async Task ChangeUserName(string newUsername)
@@ -416,9 +431,18 @@ public class RankingManager : MonoBehaviour
     string scoreTableName = "ScoreRanking";
     string scoreTableUrl => $"{supabaseUrl}/rest/v1/{scoreTableName}";
 
+
+    [Serializable]
+    private class SubmitPayload
+    {
+        public string client_token;
+        public string username;
+        public long score;
+        public long attempt_count;
+    }
     async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
     {
-        var payload = new
+        SubmitPayload payload = new()
         {
             client_token = clientToken,
             username = username,
