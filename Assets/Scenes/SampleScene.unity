@@ -1450,9 +1450,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1575234966}
-        m_TargetAssemblyTypeName: RankingManager, Assembly-CSharp
-        m_MethodName: Test5
+      - m_Target: {fileID: 1389918754}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: PlayHoverSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1545,6 +1545,7 @@ MonoBehaviour:
   achievementsUIPrefab: {fileID: 8481022421906558344, guid: 10f29c1beaa64e844ad82dfa6797b03f, type: 3}
   rankingUIPrefab: {fileID: 7214735226932554512, guid: 840c29e863e4285419a7ace15e07e19f, type: 3}
   HoverUIPrefab: {fileID: 955156755218963263, guid: c8072834761367a49a3c7616f43dfdcc, type: 3}
+  hoverSound: {fileID: 8300000, guid: 81aab348142cd4445b7c3b798166b113, type: 3}
 --- !u!4 &1389918755
 Transform:
   m_ObjectHideFlags: 0
@@ -1572,7 +1573,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

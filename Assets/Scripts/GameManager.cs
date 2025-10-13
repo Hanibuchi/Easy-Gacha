@@ -251,4 +251,13 @@ public class GameManager : MonoBehaviour
 
         naichilab.UnityRoomTweet.Tweet("exp_gacha", text, "指数分布ガチャ");
     }
+
+    [SerializeField] AudioClip hoverSound;
+    public void PlayHoverSound()
+    {
+        if (hoverSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(hoverSound);
+        }
+    }
 }
