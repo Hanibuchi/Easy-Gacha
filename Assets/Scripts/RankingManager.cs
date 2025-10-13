@@ -3,11 +3,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Linq; // OrderByDescendingを使うために必要
 using System;
-using Supabase.Postgrest.Models;
-using Supabase.Postgrest.Attributes;
-using unityroom.Api;
 using UnityEngine.Networking;
-using TMPro;
 
 public class RankingManager : MonoBehaviour
 {
@@ -19,7 +15,6 @@ public class RankingManager : MonoBehaviour
     [SerializeField] private string supabaseUrl = "YOUR_SUPABASE_URL";
     [SerializeField] private string supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
 
-    private Supabase.Client supabase;
     public string Username => username;
     string username;
     const string USERNAME_KEY = "username";
@@ -41,18 +36,6 @@ public class RankingManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-        }
-
-
-        // Supabaseクライアントの初期化
-        try
-        {
-            supabase = new Supabase.Client(supabaseUrl, supabaseAnonKey);
-            Debug.Log("Supabase Client Initialized.");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Supabase Initialization Error: {e.Message}");
         }
 
         username = PlayerPrefs.GetString(USERNAME_KEY, defaultUsername);
@@ -416,27 +399,4 @@ public class RankingManager : MonoBehaviour
         var result = await GetMyRankAsync();
         Debug.Log($"result: {result}");
     }
-}
-
-
-// Supabaseのテーブル構造と対応させる
-[Table("ScoreRanking")] // Supabaseのテーブル名
-public class HighScore : BaseModel
-{
-    [PrimaryKey("id", false)]
-    public string Id { get; set; }
-
-    [Column("client_token")]
-    public string ClientToken { get; set; }
-
-    [Column("username")]
-    public string Username { get; set; }
-
-    [Column("score")]
-    public long Score { get; set; }
-
-    [Column("created_at")]
-    public DateTime CreatedAt { get; set; }
-    [Column("attempt_count")]
-    public long? AttemptCount { get; set; }
 }
