@@ -101,7 +101,7 @@ public class RankingMenu : MonoBehaviour
         }
 
         // 2. 自分の順位を計算
-        int rank = await RankingManager.Instance.GetUserRankAsync2();
+        int rank = await RankingManager.Instance.GetMyRankAsync();
 
         if (rank > 0)
         {

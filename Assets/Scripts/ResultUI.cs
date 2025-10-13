@@ -192,7 +192,7 @@ public class ResultUI : MonoBehaviour
         int rank = 0;
         if (isBest)
         {
-            rank = await RankingManager.Instance.GetUserRankAsync(RankingManager.Instance.ClientToken);
+            rank = await RankingManager.Instance.GetMyRankAsync();
         }
         GameManager.Instance.Tweet(currentScore, isBest, rank, isAchievement, currentComment);
         isTweetButtonClicked = false;

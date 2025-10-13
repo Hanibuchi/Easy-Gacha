@@ -206,6 +206,7 @@ public class RankingManager : MonoBehaviour
             return null;
         }
     }
+
     public Task<RankingEntry> GetMyScoreAsync()
     {
         return GetUserScoreAsync2(_clientToken);
@@ -253,40 +254,6 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-    public async Task<int> GetUserRankAsync(string clientToken)
-    {
-        // 1. まず、ユーザー自身のスコアを取得する
-        HighScore userEntry = await GetUserScoreAsync(clientToken);
-
-        if (userEntry == null)
-        {
-            Debug.Log("User has no registered score.");
-            return -1; // スコアなし
-        }
-
-        long userScore = userEntry.Score;
-
-        try
-        {
-            // 2. そのスコアより高いスコアを持つ行の数を数える
-            // select=count で件数だけを要求
-            var higherCount = await supabase
-                .From<HighScore>()
-                // ★★★ 自分のスコアより厳密に大きいスコアをフィルタリング ★★★
-                .Filter("score", Supabase.Postgrest.Constants.Operator.GreaterThan, (int)userScore)
-                .Count(Supabase.Postgrest.Constants.CountType.Exact);
-
-            // 3. 取得した件数 + 1 が順位となる
-            // 例: 自分よりスコアが高い人が5人いれば、自分の順位は6位 (5 + 1)
-            // 厳密な順位（同スコアの順位変動を考慮しないシンプルなランク付け）
-            return (int)higherCount + 1;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"Failed to calculate user rank: {e.Message}");
-            return -1;
-        }
-    }
     [System.Serializable]
     private class CountResponse
     {
@@ -298,7 +265,7 @@ public class RankingManager : MonoBehaviour
     {
         public List<CountResponse> entries;
     }
-    public async Task<int> GetUserRankAsync2()
+    public async Task<int> GetMyRankAsync()
     {
         var bestScore = GameManager.Instance.BestScore;
         string requestUrl = $"{scoreTableUrl}?score=gt.{bestScore}&select=count";
@@ -543,7 +510,7 @@ public class RankingManager : MonoBehaviour
     }
     public async void Test5()
     {
-        var result = await GetUserRankAsync2();
+        var result = await GetMyRankAsync();
         Debug.Log($"result: {result}");
     }
 }
