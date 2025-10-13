@@ -1452,7 +1452,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1575234966}
         m_TargetAssemblyTypeName: RankingManager, Assembly-CSharp
-        m_MethodName: Test4
+        m_MethodName: Test5
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1531,6 +1531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mean: 50
+  bestScore: 0
   buttonsUI: {fileID: 1273241681}
   startUIPrefab: {fileID: 2426271184564667298, guid: a09838d2dec2b204cb1683076ed8c4aa, type: 3}
   titleUIPrefab: {fileID: 7103487280322224762, guid: 3add46bc37626d348bc4fa8e8bfd8360, type: 3}

@@ -294,6 +294,55 @@ public class RankingManager : MonoBehaviour
             return -1;
         }
     }
+    [System.Serializable]
+    private class CountResponse
+    {
+        public long count;
+    }
+
+    [System.Serializable]
+    private class CountListWrapper
+    {
+        public List<CountResponse> entries;
+    }
+    public async Task<int> GetUserRankAsync2()
+    {
+        var bestScore = GameManager.Instance.BestScore;
+        string requestUrl = $"{scoreTableUrl}?score=gt.{bestScore}&select=count";
+
+        using UnityWebRequest request = UnityWebRequest.Get(requestUrl);
+        request.SetRequestHeader("apikey", supabaseAnonKey);
+        request.SetRequestHeader("Authorization", $"Bearer {supabaseAnonKey}");
+
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+            await Task.Yield();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            string jsonResponse = request.downloadHandler.text;
+
+            string wrappedJson = $"{{\"entries\":{jsonResponse}}}";
+            CountListWrapper parsedList = JsonUtility.FromJson<CountListWrapper>(wrappedJson);
+            if (parsedList != null && parsedList.entries != null && parsedList.entries.Count > 0)
+            {
+                long higherCount = parsedList.entries[0].count;
+                Debug.Log($"自分よりスコアが高い人は {higherCount} 人いました。");
+
+                return (int)higherCount + 1;
+            }
+            else
+            {
+                Debug.LogError("カウントのパースに失敗しました。");
+                return -1;
+            }
+        }
+        else
+        {
+            Debug.LogError($"順位計算エラー: {request.error}\n詳細: {request.downloadHandler.text}");
+            return -1;
+        }
+    }
 
     // --- 4. スコア登録/更新関数 ---
     /// <summary>
@@ -489,6 +538,11 @@ public class RankingManager : MonoBehaviour
         result.score = test_score;
         bool isSuccess = await UpdateScoreAsync(result);
         Debug.Log($"isSuccess: {isSuccess}");
+    }
+    public async void Test5()
+    {
+        var result = await GetUserRankAsync2();
+        Debug.Log($"result: {result}");
     }
 }
 

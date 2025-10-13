@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] long mean = 50;
     System.Random rand;
     public static GameManager Instance;
-    long bestScore;
+    [SerializeField] long bestScore;
+    public long BestScore => bestScore;
     const string BEST_SCORE_KEY = "BestScore";
     const string IS_PLAYED_BEFORE_KEY = "IsPlayedBefore";
     const string ATTEMPT_COUNT_KEY = "AttemptCount";
@@ -159,7 +160,7 @@ public class GameManager : MonoBehaviour
                 clackerParticle.Play();
                 Debug.Log("クラッカーが鳴った！🎊");
             }
-            
+
             audioSource.PlayOneShot(clackerClip);
 
             // クラッカー演出が終了するまで待機
