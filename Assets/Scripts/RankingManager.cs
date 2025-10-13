@@ -65,7 +65,7 @@ public class RankingManager : MonoBehaviour
 
     public async void SubmitBestScore(long score)
     {
-        var rankingEntry = await GetUserScoreAsync2(_clientToken);
+        var rankingEntry = await GetUserScoreAsync(_clientToken);
         if (rankingEntry != null)
         {
             rankingEntry.score = score;
@@ -89,7 +89,7 @@ public class RankingManager : MonoBehaviour
         PlayerPrefs.SetString(USERNAME_KEY, username);
         PlayerPrefs.Save();
 
-        var mydata = await GetUserScoreAsync2(_clientToken);
+        var mydata = await GetUserScoreAsync(_clientToken);
         if (mydata != null)
         {
             mydata.username = newUsername;
@@ -179,40 +179,12 @@ public class RankingManager : MonoBehaviour
         }
     }
 
-
-    public async Task<HighScore> GetUserScoreAsync(string clientToken)
-    {
-        if (supabase == null)
-        {
-            Debug.Log("Supabase is null");
-            return null;
-        }
-
-        try
-        {
-            var response = await supabase
-            .From<HighScore>()
-            .Filter("client_token", Supabase.Postgrest.Constants.Operator.Equals, clientToken)
-            .Limit(3)
-            .Get();
-
-            if (response.Models.Count < 0)
-                return null;
-            return response.Models.FirstOrDefault();
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"Failed to fetch ranking: {e.Message}");
-            return null;
-        }
-    }
-
     public Task<RankingEntry> GetMyScoreAsync()
     {
-        return GetUserScoreAsync2(_clientToken);
+        return GetUserScoreAsync(_clientToken);
     }
 
-    async Task<RankingEntry> GetUserScoreAsync2(string clientToken)
+    async Task<RankingEntry> GetUserScoreAsync(string clientToken)
     {
         string requestUrl = $"{scoreTableUrl}?select=*&client_token=eq.{clientToken}&limit=1";
 
@@ -495,13 +467,13 @@ public class RankingManager : MonoBehaviour
     }
     public async void Test3()
     {
-        var result = await GetUserScoreAsync2(test_clientToken);
+        var result = await GetUserScoreAsync(test_clientToken);
         Debug.Log($"score: {result.score}, name: {result.username}, chientToken: {result.client_token}, attemptCount: {result.attempt_count}, created_at: {result.created_at}");
     }
 
     public async void Test4()
     {
-        var result = await GetUserScoreAsync2(test_clientToken);
+        var result = await GetUserScoreAsync(test_clientToken);
         result.attempt_count = test_attempt_count;
         result.username = test_username;
         result.score = test_score;
