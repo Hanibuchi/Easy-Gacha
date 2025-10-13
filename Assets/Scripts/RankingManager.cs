@@ -7,7 +7,7 @@ using Supabase.Postgrest.Models;
 using Supabase.Postgrest.Attributes;
 using unityroom.Api;
 using UnityEngine.Networking;
-using UnityEditor.Compilation;
+using TMPro;
 
 public class RankingManager : MonoBehaviour
 {
@@ -111,6 +111,87 @@ public class RankingManager : MonoBehaviour
             return new List<HighScore>();
         }
     }
+    [Serializable]
+    class RankingEntry_
+    {
+        public string id;
+
+        public string client_token;
+
+        public string username;
+
+        public long score;
+
+        public string created_at;
+        public long? attempt_count;
+        public RankingEntry ToRankingEntry()
+        {
+            return new RankingEntry
+            {
+                id = id,
+                client_token = client_token,
+                username = username,
+                score = score,
+                created_at = DateTime.Parse(created_at),
+                attempt_count = attempt_count
+            };
+        }
+    }
+    [Serializable]
+    public class RankingEntry
+    {
+        public string id;
+
+        public string client_token;
+
+        public string username;
+
+        public long score;
+
+        public DateTime created_at;
+        public long? attempt_count;
+    }
+    [Serializable]
+    class RankingsList_
+    {
+        public List<RankingEntry_> entries;
+    }
+
+    public async Task<List<RankingEntry>> GetRankingAsync2(int limit = 10)
+    {
+        string requestUrl = $"{scoreTableUrl}?select=*&order=score.desc&limit={limit}";
+        using UnityWebRequest request = UnityWebRequest.Get(requestUrl);
+        request.SetRequestHeader("apikey", supabaseAnonKey);
+        request.SetRequestHeader("Authorization", $"Bearer {supabaseAnonKey}");
+
+        var operation = request.SendWebRequest();
+        while (!operation.isDone)
+            await Task.Yield();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            string jsonResponse = request.downloadHandler.text;
+            Debug.Log($"サーバーからの応答: {jsonResponse}");
+
+            string wrappedJson = $"{{\"entries\":{jsonResponse}}}";
+            RankingsList_ list = JsonUtility.FromJson<RankingsList_>(wrappedJson);
+
+            if (list == null || list.entries == null)
+            {
+                Debug.LogWarning("JSONのパースに失敗したか、ランキングデータが空です。");
+                return new();
+            }
+
+            return list.entries.Select(entry => entry.ToRankingEntry()).ToList();
+        }
+        else
+        {
+            Debug.LogError($"エラー: {request.error}\n詳細: {request.downloadHandler.text}");
+            return new();
+        }
+    }
+
+
     public async Task<HighScore> GetUserScoreAsync(string clientToken)
     {
         if (supabase == null)
@@ -243,7 +324,7 @@ public class RankingManager : MonoBehaviour
     }
 
     string scoreTableName = "ScoreRanking";
-    string scoreTableURL => $"{supabaseUrl}/rest/v1/{scoreTableName}";
+    string scoreTableUrl => $"{supabaseUrl}/rest/v1/{scoreTableName}";
 
     public async Task<bool> SubmitScoreAsync2(long score, string username, string clientToken, long attemptCount)
     {
@@ -257,7 +338,7 @@ public class RankingManager : MonoBehaviour
         string json = JsonUtility.ToJson(payload);
 
 
-        using UnityWebRequest request = new(scoreTableURL, "POST");
+        using UnityWebRequest request = new(scoreTableUrl, "POST");
         byte[] bodyRow = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRow);
         request.downloadHandler = new DownloadHandlerBuffer();
@@ -287,23 +368,20 @@ public class RankingManager : MonoBehaviour
     public long test_attempt_count;
     public async void Test()
     {
-        var result = await SubmitScoreAsync(test_score, test_username, _clientToken);
-        Debug.Log($"result: {result}");
-    }
-    public async void Test_new()
-    {
         var result = await SubmitScoreAsync2(test_score, test_username, _clientToken, test_attempt_count);
         Debug.Log($"result: {result}");
     }
-
-    // public async void Test2()
-    // {
-    //     var result = await GetRankingAsync(10);
-    //     for (int i = 0; i < result.Count; i++)
-    //     {
-    //         Debug.Log($"rank: {i}, score: {result[i].Score}, name: {result[i].Username}, chientToken: {result[i].ClientToken}");
-    //     }
-    // }
+    // [SerializeField] TMP_Text test_text;
+    public async void Test2()
+    {
+        var result = await GetRankingAsync2(10);
+        for (int i = 0; i < result.Count; i++)
+        {
+            string str = $"rank: {i}, score: {result[i].score}, name: {result[i].username}, chientToken: {result[i].client_token}, attemptCount: {result[i].attempt_count}";
+            Debug.Log(str);
+            // test_text.text = str;
+        }
+    }
     // public async void Test3()
     // {
     //     var result = await GetMyScoreAsync(chientToken);
