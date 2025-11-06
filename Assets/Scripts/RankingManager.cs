@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq; // OrderByDescendingを使うために必要
 using System;
 using UnityEngine.Networking;
+using unityroom.Api;
 
 public class RankingManager : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class RankingManager : MonoBehaviour
 
     public async void SubmitBestScore(long score)
     {
+        UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
         var rankingEntry = await GetUserScoreAsync(_clientToken);
         if (rankingEntry != null)
         {
